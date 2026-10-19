@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#000000" />
+  <title>OPORTUNIA IA — Tu próxima oportunidad</title>
+  
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="logo-anim.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="container head-inner">
+    <a href="#" class="brand">
+      <span class="brand-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/>
+        </svg>
+      </span>
+      <span>
+        <span class="brand-name">OPORTUNIA IA</span>
+        <span class="brand-sub">DESCUBRE · APRENDE · CRECE</span>
+      </span>
+    </a>
+    <button class="mini-button" id="fav-btn">
+      <i data-lucide="heart" style="width:16px; height:16px;"></i> Mis favoritos <span id="fav-count">0</span>
+    </button>
+  </div>
+</header>
+
+<!-- VISTA 1: HERO -->
+<section id="hero-section">
+  <!-- Logo -->
+  <div class="compass-wrapper">
+    <svg class="compass-svg" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="50" cy="50" r="45" stroke="var(--mint)" stroke-width="7" />
+      <g class="compass-rhombus">
+        <path d="M 50 35 L 82 50 L 50 65 L 18 50 Z" stroke="var(--mint)" stroke-width="7" stroke-linejoin="round" />
+      </g>
+    </svg>
+  </div>
+
+  <h1 class="hero-title">Grandes oportunidades.<br><span>Hechas para ti.</span></h1>
+  <p class="hero-desc">Encuentra becas, cursos gratuitos y voluntariados que se ajustan a lo que estudias, te interesa y quieres lograr.</p>
+  <button class="btn-primary" id="start-btn">
+    Descubrir mi camino <i data-lucide="sparkles"></i>
+  </button>
+</section>
+
+<!-- VISTA 2: APP -->
+<section id="app-section">
+  <div class="container">
+    <div class="layout initial-state" id="main-layout">
+      
+      <!-- FORMULARIO -->
+      <div class="panel" id="profile-panel">
+        <button class="back-home-btn" id="back-home-btn">
+          <i data-lucide="arrow-left" style="width:14px;"></i> Volver al inicio
+        </button>
+
+        <div class="panel-kicker">01 / Tu perfil</div>
+        <h2>Cuéntanos sobre ti</h2>
+        <p class="panel-desc">Con unos pocos datos, encontraremos opciones más relevantes para ti.</p>
+        
+        <form id="search-form">
+          <div class="field fields-two">
+            <div>
+              <label>Edad</label>
+              <!-- Sin value por defecto en el HTML -->
+              <input type="number" id="edad" min="12" max="100" required>
+            </div>
+            <div>
+              <label>Nivel de estudios</label>
+              <select id="nivel" required>
+                <option value="" disabled selected>Selecciona nivel</option>
+                <option value="Secundaria">Secundaria</option>
+                <option value="Universitario">Universitario</option>
+                <option value="Egresado">Egresado</option>
+                <option value="Posgrado">Posgrado</option>
+              </select>
+            </div>
+          </div>
+          
+          <div class="field">
+            <label>País o región</label>
+            <input type="text" id="ubicacion" required>
+          </div>
+
+          <div class="field">
+            <label>¿Qué temas te interesan?</label>
+            <textarea id="intereses" rows="2" placeholder="Ej. Tecnología, IA, idiomas..." required></textarea>
+          </div>
+
+          <div class="field">
+            <label>¿Qué quieres encontrar?</label>
+            <div class="categories">
+              <label class="category">
+                <input type="checkbox" name="categoria" value="Beca">
+                <span class="category-visual">🎓<br>Becas</span>
+              </label>
+              <label class="category">
+                <input type="checkbox" name="categoria" value="Curso">
+                <span class="category-visual">📘<br>Cursos</span>
+              </label>
+              <label class="category">
+                <input type="checkbox" name="categoria" value="Voluntariado">
+                <span class="category-visual">🤝<br>Voluntariados</span>
+              </label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width:100%; justify-content:center; margin-top: 10px;" id="submit-btn">
+            Buscar oportunidades <i data-lucide="search"></i>
+          </button>
+        </form>
+      </div>
+
+      <!-- RESULTADOS Y BÚSQUEDA -->
+      <div class="panel" id="results-panel">
+        <div id="search-panel" style="display: none;">
+          <div class="search-header">
+            <div class="search-loader"></div>
+            <h2 style="margin-bottom: 8px;">Buscando coincidencias...</h2>
+            <p style="color: var(--text-dim); font-size: 0.9rem;">La IA está analizando tu perfil. (Puedes editar tus preferencias mientras busca).</p>
+          </div>
+          <div class="profile-tags" id="interactive-tags"></div>
+          <div id="skeleton-list">
+            <div class="card" style="opacity: 0.5; animation: pulse 1s infinite alternate; margin-top: 20px;">
+               <div style="height: 20px; width: 40%; background: #222; margin-bottom: 12px; border-radius: 4px;"></div>
+               <div style="height: 16px; width: 90%; background: #222; margin-bottom: 8px; border-radius: 4px;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="final-results" class="hidden">
+          <div class="results-header-bar">
+            <button id="back-btn"><i data-lucide="arrow-left" style="width:16px;"></i> Volver</button>
+            <h2 style="margin: 0;" id="results-title">Tus oportunidades</h2>
+          </div>
+          <div id="results-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MODAL PERSONALIZADO -->
+<div id="custom-modal" class="modal-overlay hidden">
+  <div class="modal-card">
+    <h3>Quitar de favoritos</h3>
+    <p id="modal-message">¿Estás seguro de que quieres quitar esta oportunidad de tus favoritos?</p>
+    <div class="modal-actions">
+      <button id="modal-cancel" class="btn-secondary">Cancelar</button>
+      <button id="modal-confirm" class="btn-danger">Sí, quitar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* =========================================================
+     CONFIGURACIÓN DE DATOS PREDETERMINADOS
+     =========================================================
+     Cambia a 'false' si quieres probar con el formulario vacío. 
+     O simplemente comenta el bloque entero si prefieres borrarlo. */
+  const USAR_DATOS_PRUEBA = false; 
+
+  const DATOS_PRUEBA = {
+    edad: "20",
+    nivel: "Universitario",
+    ubicacion: "Perú",
+    intereses: "Tecnología, programación e inteligencia artificial",
+    categorias: ["Beca", "Curso", "Voluntariado"] // Opciones: "Beca", "Curso", "Voluntariado"
+  };
+  /* ========================================================= */
+
+  lucide.createIcons();
+  const $ = id => document.getElementById(id);
+  
+  let searchController = null;
+  let currentProfile = null;
+  let isFavMode = false;
+  let favorites = JSON.parse(localStorage.getItem('oportunia_favs')) || {};
+  
+  updateFavCount();
+
+  // FUNCIÓN PARA INYECTAR LOS DATOS DE PRUEBA
+  function cargarDatosPrueba() {
+    if (!USAR_DATOS_PRUEBA) return; // Si está en false, no hace nada
+
+    $('edad').value = DATOS_PRUEBA.edad;
+    $('nivel').value = DATOS_PRUEBA.nivel;
+    $('ubicacion').value = DATOS_PRUEBA.ubicacion;
+    $('intereses').value = DATOS_PRUEBA.intereses;
+    
+    // Marcar los checkboxes correctos
+    const checkboxes = document.querySelectorAll('input[name="categoria"]');
+    checkboxes.forEach(cb => {
+      cb.checked = DATOS_PRUEBA.categorias.includes(cb.value);
+    });
+  }
+
+  // Llamamos a la función al cargar la página
+  cargarDatosPrueba();
+
+  // Función auxiliar para transiciones
+  function showApp() {
+    if ($('hero-section').classList.contains('hidden')) return;
+    $('hero-section').style.opacity = '0';
+    $('hero-section').style.transform = 'translateY(-20px)';
+    setTimeout(() => {
+      $('hero-section').classList.add('hidden');
+      $('app-section').style.display = 'block';
+      setTimeout(() => $('app-section').style.opacity = '1', 50);
+    }, 500);
+  }
+
+  $('start-btn').addEventListener('click', showApp);
+
+  $('back-home-btn').addEventListener('click', () => {
+    $('app-section').style.opacity = '0';
+    setTimeout(() => {
+      $('app-section').style.display = 'none';
+      $('hero-section').classList.remove('hidden');
+      setTimeout(() => $('hero-section').style.opacity = '1', 50);
+    }, 500);
+    resetToForm();
+  });
+
+  $('fav-btn').addEventListener('click', () => {
+    isFavMode = !isFavMode;
+    
+    if (isFavMode) {
+      showApp();
+      $('fav-btn').classList.add('active');
+      $('main-layout').classList.remove('initial-state', 'searching');
+      $('main-layout').classList.add('fav-mode');
+      
+      setTimeout(() => {
+        $('results-panel').style.display = 'block';
+        $('search-panel').style.display = 'none';
+        $('final-results').classList.remove('hidden');
+        $('results-title').textContent = "Mis favoritos";
+        renderCards(Object.values(favorites));
+      }, 600);
+    } else {
+      $('fav-btn').classList.remove('active');
+      $('main-layout').classList.remove('fav-mode');
+      if (currentProfile) {
+        $('main-layout').classList.add('searching');
+        $('results-title').textContent = "Tus oportunidades";
+        showResults(); 
+      } else {
+        resetToForm();
+      }
+    }
+  });
+
+  $('back-btn').addEventListener('click', resetToForm);
+
+  function updateFavCount() {
+    $('fav-count').textContent = Object.keys(favorites).length;
+  }
+
+  function showConfirmModal(message) {
+    return new Promise((resolve) => {
+      $('modal-message').textContent = message;
+      $('custom-modal').classList.remove('hidden');
+      
+      const handleConfirm = () => { cleanup(); resolve(true); };
+      const handleCancel = () => { cleanup(); resolve(false); };
+      
+      const cleanup = () => {
+        $('custom-modal').classList.add('hidden');
+        $('modal-confirm').removeEventListener('click', handleConfirm);
+        $('modal-cancel').removeEventListener('click', handleCancel);
+      };
+      
+      $('modal-confirm').addEventListener('click', handleConfirm);
+      $('modal-cancel').addEventListener('click', handleCancel);
+    });
+  }
+
+  async function toggleFavorite(id, cardData) {
+    if (favorites[id]) {
+      const confirmed = await showConfirmModal('¿Estás seguro de que quieres quitar esta oportunidad de tus favoritos?');
+      if (!confirmed) return; 
+      delete favorites[id];
+    } else {
+      favorites[id] = cardData;
+    }
+    
+    localStorage.setItem('oportunia_favs', JSON.stringify(favorites));
+    updateFavCount();
+    
+    if (isFavMode) {
+      renderCards(Object.values(favorites));
+    } else {
+      const btn = document.querySelector(`.fav-btn-card[data-id="${id}"]`);
+      if (btn) btn.classList.toggle('active');
+    }
+  }
+
+  function renderCards(cards) {
+    const list = $('results-list');
+    list.innerHTML = '';
+    if (cards.length === 0) {
+      list.innerHTML = `<p style="color: var(--text-dim); text-align: center; padding: 40px;">No hay oportunidades guardadas.</p>`;
+      return;
+    }
+
+    cards.forEach(card => {
+      const isFav = !!favorites[card.id];
+      const div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML = `
+        <button class="fav-btn-card ${isFav ? 'active' : ''}" data-id="${card.id}">
+          <i data-lucide="heart"></i>
+        </button>
+        <span class="card-badge" style="background: ${card.badgeBg}; color: ${card.badgeColor};">${card.tipo}</span>
+        <h3>${card.titulo}</h3>
+        <p class="card-org"><i data-lucide="building" style="width:14px;"></i> ${card.org}</p>
+        <p class="card-desc">${card.desc}</p>
+        <div class="card-footer">
+          <span style="font-size: 0.8rem; color: var(--text-dim);">${card.fecha}</span>
+          <a href="#" class="btn-outline">Ver detalles <i data-lucide="arrow-right" style="width:14px;"></i></a>
+        </div>
+      `;
+      div.querySelector('.fav-btn-card').addEventListener('click', () => {
+        toggleFavorite(card.id, card);
+      });
+      list.appendChild(div);
+    });
+    lucide.createIcons();
+  }
+
+  function renderTags(profile) {
+    const container = $('interactive-tags');
+    container.innerHTML = '';
+    const tagsData = [
+      { key: 'edad', label: `${profile.edad} años` },
+      { key: 'nivel', label: profile.nivel },
+      { key: 'ubicacion', label: profile.ubicacion },
+      ...profile.categorias.map(c => ({ key: 'categoria', label: c, value: c }))
+    ];
+
+    tagsData.forEach(tag => {
+      const div = document.createElement('div');
+      div.className = 'tag';
+      div.innerHTML = `
+        <span>${tag.label}</span>
+        <div class="tag-actions">
+          <button type="button" class="tag-btn edit" data-key="${tag.key}" data-value="${tag.value || ''}" title="Editar">
+            <i data-lucide="pencil" style="width:12px;height:12px;"></i>
+          </button>
+          <button type="button" class="tag-btn delete" data-key="${tag.key}" data-value="${tag.value || ''}" title="Eliminar">
+            <i data-lucide="x" style="width:12px;height:12px;"></i>
+          </button>
+        </div>
+      `;
+      container.appendChild(div);
+    });
+
+    lucide.createIcons();
+
+    container.querySelectorAll('.tag-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (searchController) { searchController.abort(); searchController = null; }
+        const key = btn.dataset.key;
+        const isEdit = btn.classList.contains('edit');
+
+        if (isEdit) {
+          resetToForm();
+          const input = key === 'categoria' ? $('intereses') : $(key);
+          if (input) input.focus();
+        } else {
+          if (key === 'categoria') {
+            const checkbox = document.querySelector(`input[value="${btn.dataset.value}"]`);
+            if (checkbox) checkbox.checked = false;
+          } else {
+            $(key).value = ''; 
+          }
+          if (validarFormulario()) {
+             $('search-form').dispatchEvent(new Event('submit'));
+          } else {
+             resetToForm();
+          }
+        }
+      });
+    });
+  }
+
+  function resetToForm() {
+    $('main-layout').classList.remove('searching', 'fav-mode');
+    $('main-layout').classList.add('initial-state');
+    $('results-panel').style.display = 'none';
+    isFavMode = false;
+    $('fav-btn').classList.remove('active');
+  }
+
+  function validarFormulario() {
+    const edad = parseInt($('edad').value);
+    const categorias = document.querySelectorAll('input[name="categoria"]:checked');
+    return !(isNaN(edad) || edad < 12 || edad > 100 || !$('ubicacion').value.trim() || !$('intereses').value.trim() || !$('nivel').value || categorias.length === 0);
+  }
+
+  $('search-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!validarFormulario()) return alert("Revisa los datos. Asegúrate de llenar todos los campos.");
+
+    currentProfile = {
+      edad: parseInt($('edad').value),
+      nivel: $('nivel').value,
+      ubicacion: $('ubicacion').value,
+      intereses: $('intereses').value,
+      categorias: [...document.querySelectorAll('input[name="categoria"]:checked')].map(c => c.value)
+    };
+
+    $('main-layout').classList.remove('initial-state');
+    $('main-layout').classList.add('searching');
+    $('results-panel').style.display = 'block';
+    $('search-panel').style.display = 'block';
+    $('final-results').classList.add('hidden');
+    $('skeleton-list').style.display = 'block';
+    renderTags(currentProfile);
+
+    try {
+      searchController = new AbortController();
+      
+      // FETCH REAL AQUI
+      await new Promise((resolve, reject) => {
+        const timeout = setTimeout(resolve, 4000);
+        searchController.signal.addEventListener('abort', () => {
+          clearTimeout(timeout);
+          reject(new DOMException('Aborted', 'AbortError'));
+        });
+      });
+
+      showResults();
+    } catch (err) {
+      if (err.name !== 'AbortError') alert("Error al buscar");
+    }
+  });
+
+  function showResults() {
+    $('search-panel').style.display = 'none';
+    $('final-results').classList.remove('hidden');
+    $('results-title').textContent = "Tus oportunidades";
+    
+    const mockResults = [
+      { id: 'beca-tech-2024', tipo: 'Beca', badgeBg: 'rgba(44,211,139,0.15)', badgeColor: 'var(--mint)', titulo: 'Beca de Excelencia Tech 2024', org: 'Universidad Global', desc: 'Financiamiento completo para estudiar Ingeniería de Software o Inteligencia Artificial. Incluye manutención y viaje.', fecha: 'Cierre: 30 Nov 2024' },
+      { id: 'curso-webfull', tipo: 'Curso', badgeBg: 'rgba(59,130,246,0.15)', badgeColor: 'var(--accent)', titulo: 'Desarrollo Web Full-Stack Gratuito', org: 'Academia Online', desc: 'Aprende HTML, CSS, JS y React desde cero. Certificado incluido al finalizar.', fecha: 'Cupos limitados' }
+    ];
+
+    renderCards(mockResults);
+  }
+</script>
+</body>
+</html>
